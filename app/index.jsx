@@ -1,12 +1,49 @@
+import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
+const pomodoro = [
+  {
+    id: 'focus',
+    image: require('./pomodoro.png'),
+    inicialValue: 25,
+    display: 'Foco'
+  },
+  {
+    id: 'short',
+    image: require('./short.png'),
+    inicialValue: 5,
+    display: 'Pausa curta'
+  },
+  {
+    id: 'long',
+    image: require('./long.png'),
+    inicialValue: 15,
+    display: 'Pausa longa'
+  }
+]
+
 export default function Index() {
+  const [timerType, setTimerType] = useState(pomodoro[0])
+
   return (
     <View style={styles.container}>
-      <Image resizeMode="contain" style={styles.image} source={require('./Imagem foco.png')}/>
+      <Image resizeMode="contain" style={styles.image} source={timerType.image}/>
       <View style={styles.action}>
+        <View style={styles.context}>
+          {pomodoro.map(p => (
+            <Pressable 
+              key={p.id}
+              style={ timerType.id === p.id ? styles.contextButtonActive : null }
+              onPress={() => setTimerType(p)}
+            >
+              <Text style={styles.contextButtonText}>
+                {p.display}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
         <Text style={styles.timer}>
-          25:00
+          { new Date(timerType.inicialValue * 1000).toLocaleTimeString('pt-BR', { minute: '2-digit', second: '2-digit' })}
         </Text>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>
@@ -46,6 +83,21 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#144480",
     gap: 32
+  },
+  context: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+  contextButtonActive: {
+    backgroundColor: '#144480',
+    borderRadius: 8,
+    
+  },
+  contextButtonText: {
+    padding: 8,
+    fontSize: 12.5,
+    color: '#FFF'
   },
   timer: {
     color: "#FFF",
